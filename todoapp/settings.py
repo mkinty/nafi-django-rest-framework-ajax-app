@@ -26,7 +26,7 @@ SECRET_KEY = 'oqu9gb$bkvk%sso__7l!3o9i-c$tjl_hyyd3!i(pjx26-ow6u8'
 # DEBUG = True
 DEBUG = False  # comment in dev
 
-ALLOWED_HOSTS = ['nafi-drfajax.herokuapp', '127.0.0.1']  # comment in dev
+ALLOWED_HOSTS = ['nafi-drfajax.herokuapp.com', '127.0.0.1']  # comment in dev
 # ALLOWED_HOSTS = []  # don't in dev
 
 # Application definition
