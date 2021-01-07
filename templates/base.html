@@ -167,9 +167,9 @@
             console.log('Form submitted');
 
             // create item (add task)
-            let url = 'http://127.0.0.1:8000/api/task-create/'
+            let url = 'https://nafi-drfajax.herokuapp.com/api/task-create/'
             if (activeItem != null) {
-                url = `http://127.0.0.1:8000/api/task-update/${activeItem.id}/`
+                url = `https://nafi-drfajax.herokuapp.com/api/task-update/${activeItem.id}/`
                 activeItem = null
             }
 
@@ -201,7 +201,7 @@
 
         function deleteItem(item) {
             console.log('Delete clicked');
-            fetch(`http://127.0.0.1:8000/api/task-delete/${item.id}/`, {
+            fetch(`https://nafi-drfajax.herokuapp.com/api/task-delete/${item.id}/`, {
                 method: 'DELETE',
                 headers: {
                     'Content-type':'application/json',
@@ -216,7 +216,7 @@
             console.log('Strike clicked');
 
             item.completed = !item.completed
-            fetch(`http://127.0.0.1:8000/api/task-update/${item.id}/`, {
+            fetch(`https://nafi-drfajax.herokuapp.com/api/task-update/${item.id}/`, {
                 method: 'POST',
                 headers: {
                     'Content-type':'application/json',
