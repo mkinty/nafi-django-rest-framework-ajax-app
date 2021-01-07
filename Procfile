@@ -1,1 +1,1 @@
-web: waitress-serve --port=$PORT {todoapp}.wsgi:application
+web: gunicorn todoapp.wsgi
