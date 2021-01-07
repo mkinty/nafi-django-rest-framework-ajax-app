@@ -23,11 +23,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'oqu9gb$bkvk%sso__7l!3o9i-c$tjl_hyyd3!i(pjx26-ow6u8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-# DEBUG = False  # comment in dev
+# DEBUG = True
+DEBUG = False  # comment in dev
 
-# ALLOWED_HOSTS = ['nafi-drfajax.herokuapp.com', '127.0.0.1']  # comment in dev
-ALLOWED_HOSTS = []  # don't in dev
+ALLOWED_HOSTS = ['nafi-drfajax.herokuapp.com', '127.0.0.1']  # comment in dev
+# ALLOWED_HOSTS = []  # don't in dev
 
 # Application definition
 
@@ -130,7 +130,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static', ]
-# STATIC_ROOT = BASE_DIR / 'staticfiles/'
+STATIC_ROOT = BASE_DIR / 'staticfiles/'
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'static/media'
