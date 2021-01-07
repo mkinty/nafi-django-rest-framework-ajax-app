@@ -1,0 +1,1 @@
+/Users/moustaphakinty/KmyProd/DjangoRESTFrameWorkAjax/venv/bin/python /Users/moustaphakinty/KmyProd/DjangoRESTFrameWorkAjax/src/manage.py runserver

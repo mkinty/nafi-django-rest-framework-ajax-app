@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <title>{% block title %} {% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'bootstrap4/bootstrap.min.css' %}">
+</head>
+
+<body>
+    <!-- Navbar brand -->
+    <nav class="navbar navbar-expand-lg  navbar-dark " >
+        <a href="{% url 'frontend:list' %}" class="navbar-brand"><img src='{% static "images/kmyprod-dark.svg" %}' style="height: 80px; width: 80px;"></a>
+        
+        <!-- Toggler/collapsibe Button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar"
+        aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Collapsible content -->
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'frontend:list' %}">TASKS LIST </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+
+        <div id="task-container">
+            <div id="form-wrapper">
+                {% block content %}
+
+                {% endblock %}
+            </div>
+
+            <div id="list-wrapper">
+            
+            </div>	
+        </div>
+
+    </div>
+
+    <script type="text/javascript">
+
+        
+
+        // CSRF Token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // stocker la function getCookie dans la variable csrftoken
+        const csrftoken = getCookie('csrftoken');
+
+        let activeItem = null
+        let list_snapshot = []
+
+        buildList()
+
+        function buildList() {
+            let wrapper = document.getElementById('list-wrapper')
+            // Il existe plusieurs façon d'eviter de dupliquer les items, fixer wrapper.innerHTML = '' dès le debut
+            /* wrapper.innerHTML = '' */
+            // ou utiliser la fonction remove avec la commande try à l'intérieur de la boucle for
+            
+            const url = 'http://127.0.0.1:8000/api/task-list/'
+            
+            // recuperer la liste des donnees depuis l'api de l'app
+            fetch(url)
+            .then((resp => resp.json()))
+            .then(function(data) {
+                console.log('Data', data);
+
+                // stocker les donnees dans la variable list
+                const list = data
+
+                // creer une liste items
+                for (let i in list) {
+                    
+                    // eviter de dupliquer les items
+                    try {
+                        document.getElementById(`data-row-${i}`).remove()
+                    } catch (error) {
+                        
+                    }
+
+                    let title = `<span class="title">${list[i].title}</span>`
+                    if (list[i].completed == true) {
+                        title = `<strike class="title">${list[i].title}</strike>`
+                    }
+                    const item = `
+                        <div id="data-row-${i}" class="task-wrapper flex-wrapper">
+                            <div style="flex: 7">
+                                <span>${title}</span>
+                            </div>
+                            <div style="flex: 1">
+                                <button class="btn btn-sm btn-outline-info edit">Edit</button>
+                            </div>
+                            <div style="flex: 1">
+                                <button class="btn btn-sm btn-outline-dark delete">-</button>
+                            </div>
+                        </div>
+                    `
+                    // afficher les items dans la div contenant l'id list-wrapper
+                    wrapper.innerHTML += item
+
+                }
+
+                // supprimer les items de list_snapshot qui ne figurent pas sur la liste des item
+                if (list_snapshot.length > list.length) {
+                    for (let i = list.length; i < list_snapshot.length; i++) {
+                        document.getElementById(`data-row-${i}`).remove()
+                        
+                    }
+                }
+                list_snapshot = list
+
+                // Event
+                for (let i in list){
+                    const editBtn = document.getElementsByClassName('edit')[i]
+                    const deleteBtn = document.getElementsByClassName('delete')[i]
+                    const title = document.getElementsByClassName('title')[i]
+                    
+                    editBtn.addEventListener('click', (function(item) {
+                        return function () {
+                            editItem(item)
+                        }
+                    })(list[i]))
+
+                    deleteBtn.addEventListener('click', (function(item) {
+                        return function () {
+                            deleteItem(item)
+                        }
+                    })(list[i]))
+
+                    title.addEventListener('click', (function(item) {
+                        return function () {
+                            strikeUnstrike(item)
+                        }
+                    })(list[i]))
+                }
+
+            })
+        }
+        
+        const form = document.getElementById('form-wrapper')
+        form.addEventListener('submit', function(e) {
+            e.preventDefault()
+            console.log('Form submitted');
+
+            // create item (add task)
+            let url = 'http://127.0.0.1:8000/api/task-create/'
+            if (activeItem != null) {
+                url = `http://127.0.0.1:8000/api/task-update/${activeItem.id}/`
+                activeItem = null
+            }
+
+
+            const title = document.getElementById('title').value
+
+            fetch(url, {
+                method: 'POST',
+                headers:{
+                    'Content-type':'application/json',
+                    'X-CSRFToken':csrftoken,
+                },
+                body:JSON.stringify({'title':title})
+            }
+            ).then(function(response){
+                buildList()
+                // mettre le formulaire à jour grâce à la fonction reset
+                document.getElementById('form').reset()
+            })
+            
+        })
+
+        function editItem(item) {
+            console.log('Item clicked',item);
+            activeItem = item
+            // recuperer les items
+            document.getElementById('title').value = activeItem.title
+        }
+
+        function deleteItem(item) {
+            console.log('Delete clicked');
+            fetch(`http://127.0.0.1:8000/api/task-delete/${item.id}/`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-type':'application/json',
+                    'X-CSRFToken':csrftoken,
+                }
+            }).then((response) => {
+                buildList()
+            })
+        }
+
+        function strikeUnstrike(item) {
+            console.log('Strike clicked');
+
+            item.completed = !item.completed
+            fetch(`http://127.0.0.1:8000/api/task-update/${item.id}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-type':'application/json',
+                    'X-CSRFToken':csrftoken,
+                },
+                body: JSON.stringify({'title': item.title, 'completed':item.completed,})
+            }).then((response) => {
+                buildList()
+            })
+        }
+
+    </script>
+
+    <!-- JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+</body>
+</html>
