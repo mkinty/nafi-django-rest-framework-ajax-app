@@ -1,20 +1,25 @@
 /* GOOGLE FONT STYLE : Montserrat */
 :root {
-  --default: linear-gradient(to right, var(--blue), var(--dark));
   --green: #d8ece0;
-  --blue: #c8dbe3;
-  --register: linear-gradient(90deg, rgba(54,217,182,1) 0%, rgba(32,152,126,1) 43%, rgba(0,212,255,1) 100%);
+  --blu: #c8dbe3;
+  --register: #f4feff;
   --light: #c6dae7;
-  --kmyprod: #0e3447;
-  --primary: #1289a7;
+  --dark-k: #0e3447;
+  --defaults: linear-gradient(to right, var(--blu), var(--dark-k));
+  --primary-btn: #1289a7;
+  --secondary: #0d0d0d;
+  --gray: #40739e;
+  --gray-light: #eee;
+  --gray-hint: #555;
   --accent: #2c3e50;
   --text: #333;
   --divider: #ecf0f1;
   --hint: #95a5a6;
   --error: #ee5a24;
-  --box-header: 0 1px 2px 0 rgba(60, 64, 67, 0.3),
+  --font-body: "Mulish", sans-serif;
+  --font-header: "Cormorant Garamond", serif;
+  --box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3),
     0 1px 3px 1px rgba(60, 64, 67, 0.15);
-  --box-content: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap');
@@ -22,13 +27,17 @@
 /* NAVBAR CSS START */
 
 .navbar{
-    background: var(--kmyprod);
+    background: var(--dark-k);
     overflow:auto;
     min-height: auto;
     font-weight: bold;
     color: white;
-    box-shadow: var(--header);
 
+}
+
+.navbar img {
+  width: 3rem;
+  height: 3rem;
 }
 
 .navbar-brand, .nav-link, .nav-item {
@@ -62,8 +71,7 @@ color: #fafafa !important;
 /* TASKS CSS  START*/
 
 body{
-  background: rgb(54,217,182);
-  background: var(--register);
+  background: var(--defaults);
 }
 
 
@@ -100,7 +108,7 @@ h1, h2, h3, h4, h5, p, span, strike{
 }
 
 #submit{
-  background-color: #36d9b6;
+  background: var(--primary-btn);
   border-radius: 0;
   border:0;
   color: #fff;
